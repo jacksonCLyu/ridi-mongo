@@ -15,3 +15,7 @@ func GetClientWithOptions(serveName string, options *options.ClientOptions) *mon
 	client, _ := mongoClientMap.LoadOrStore(serveName, InitPool(options))
 	return client.(*mongo.Client)
 }
+
+// ReleaseClient program release a connection
+func ReleaseClient(hostStr string, client *mongo.Client) {
+}
