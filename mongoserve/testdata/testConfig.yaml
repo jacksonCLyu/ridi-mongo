@@ -1,0 +1,15 @@
+# mongo 配置
+mongo:
+  hostStr: "123.56.222.127:27017"
+  #  hostStr: "120.133.0.172:27017"
+  auth:
+    authMechanism: "MONGODB-CR"
+    username: "search"
+    password: "search@huoli123"
+    authSource: "flight"
+  minPoolSizePerHost: 0
+  maxPoolSizePerHost: 50
+  serverSelectionTimeout: 1000
+  connectTimeout: 1000
+  socketTimeout: 3000
+  maxConnIdleTime: 30000
