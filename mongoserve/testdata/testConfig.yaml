@@ -1,0 +1,14 @@
+# mongo 配置
+mongo:
+  hostStr: "127.0.0.1:27017"
+  auth:
+    authMechanism: "MONGODB-CR"
+    username: "root"
+    password: "root"
+    authSource: "myauth"
+  minPoolSizePerHost: 1
+  maxPoolSizePerHost: 10
+  serverSelectionTimeout: 10000
+  connectTimeout: 10000
+  socketTimeout: 30000
+  maxConnIdleTime: 30000
