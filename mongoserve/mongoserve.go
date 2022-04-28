@@ -43,57 +43,53 @@ func DestoryPool(client *mongo.Client) {
 	errcheck.CheckAndPanic(client.Disconnect(context.Background()))
 }
 
-// GetOptions return options
-func GetOptions(serviceName string) *options.ClientOptions {
-	if !config.ContainsKey(serviceName) {
-		panic("service config not found")
-	}
-	subConfig := assignutil.Assign(config.GetSection(serviceName))
-	if !subConfig.ContainsKey("mongo.hostStr") {
+// DefaultOptions return default options
+func DefaultOptions() *options.ClientOptions {
+	if !config.ContainsKey(HostKey) {
 		panic("mongo host not found")
 	}
-	hostStr := assignutil.Assign(subConfig.GetString("mongo.hostStr"))
+	hostStr := assignutil.Assign(config.GetString(HostKey))
 	hosts := strings.Split(hostStr, ",")
 	if len(hosts) == 0 {
 		panic("mongo.hosts is empty")
 	}
-	authMechanism := assignutil.Assign(subConfig.GetString("mongo.auth.authMechanism"))
-	username := assignutil.Assign(subConfig.GetString("mongo.auth.username"))
-	password := assignutil.Assign(subConfig.GetString("mongo.auth.password"))
-	authSource := assignutil.Assign(subConfig.GetString("mongo.auth.authSource"))
+	authMechanism := assignutil.Assign(config.GetString(AuthMechanismKey))
+	username := assignutil.Assign(config.GetString(UsernameKey))
+	password := assignutil.Assign(config.GetString(PasswordKey))
+	authSource := assignutil.Assign(config.GetString(AuthSourceKey))
 	var minPoolSize uint64
-	if subConfig.ContainsKey("mongo.minPoolSizePerHost") {
-		minPoolSize = assignutil.Assign(subConfig.GetUint64("mongo.minPoolSizePerHost"))
+	if config.ContainsKey(MinPoolSizeKey) {
+		minPoolSize = assignutil.Assign(config.GetUint64(MinPoolSizeKey))
 	} else {
 		minPoolSize = 1
 	}
 	var maxPoolSize uint64
-	if subConfig.ContainsKey("mongo.maxPoolSizePerHost") {
-		maxPoolSize = assignutil.Assign(subConfig.GetUint64("mongo.maxPoolSizePerHost"))
+	if config.ContainsKey(MaxPoolSizeKey) {
+		maxPoolSize = assignutil.Assign(config.GetUint64(MaxPoolSizeKey))
 	} else {
 		maxPoolSize = 10
 	}
 	var serverSelectionTimeout uint64
-	if subConfig.ContainsKey("mongo.serverSelectionTimeout") {
-		serverSelectionTimeout = assignutil.Assign(subConfig.GetUint64("mongo.serverSelectionTimeout"))
+	if config.ContainsKey(ServerSelectionTimeoutKey) {
+		serverSelectionTimeout = assignutil.Assign(config.GetUint64(ServerSelectionTimeoutKey))
 	} else {
 		serverSelectionTimeout = 3000
 	}
 	var connectTimeout uint64
-	if subConfig.ContainsKey("mongo.connectTimeout") {
-		connectTimeout = assignutil.Assign(subConfig.GetUint64("mongo.connectTimeout"))
+	if config.ContainsKey(ConnectTimeoutKey) {
+		connectTimeout = assignutil.Assign(config.GetUint64(ConnectTimeoutKey))
 	} else {
 		connectTimeout = 3000
 	}
 	var socketTimeout uint64
-	if subConfig.ContainsKey("mongo.socketTimeout") {
-		socketTimeout = assignutil.Assign(subConfig.GetUint64("mongo.socketTimeout"))
+	if config.ContainsKey(SocketTimeoutKey) {
+		socketTimeout = assignutil.Assign(config.GetUint64(SocketTimeoutKey))
 	} else {
 		socketTimeout = 120000
 	}
 	var maxConnIdleTime uint64
-	if subConfig.ContainsKey("mongo.maxConnIdleTime") {
-		maxConnIdleTime = assignutil.Assign(subConfig.GetUint64("mongo.maxConnIdleTime"))
+	if config.ContainsKey(MaxConnIdleTimeKey) {
+		maxConnIdleTime = assignutil.Assign(config.GetUint64(MaxConnIdleTimeKey))
 	} else {
 		maxConnIdleTime = 180000
 	}
@@ -102,10 +98,10 @@ func GetOptions(serviceName string) *options.ClientOptions {
 	socketTo := time.Duration(socketTimeout) * time.Millisecond
 	maxConnIdleTo := time.Duration(maxConnIdleTime) * time.Millisecond
 	var readPref *readpref.ReadPref
-	if !subConfig.ContainsKey("mongo.preferPrimary") {
+	if !config.ContainsKey(ReadPreferenceKey) {
 		readPref = readpref.SecondaryPreferred()
 	} else {
-		preferPrimary := assignutil.Assign(subConfig.GetBool("mongo.preferPrimary"))
+		preferPrimary := assignutil.Assign(config.GetBool(ReadPreferenceKey))
 		if preferPrimary {
 			readPref = readpref.PrimaryPreferred()
 		} else {

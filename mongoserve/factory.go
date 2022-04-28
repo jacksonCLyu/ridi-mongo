@@ -12,7 +12,7 @@ func GetClient(serviceName string) *mongo.Client {
 	defer rescueutil.Recover(func(err any) {
 		log.Errorf("GetClient error: %v", err)
 	})
-	return GetClientWithOptions(serviceName, GetOptions(serviceName))
+	return GetClientWithOptions(serviceName, DefaultOptions())
 }
 
 // GetClientWithOptions returns a mongo client with options
