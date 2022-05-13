@@ -2,6 +2,7 @@ package mongoserve
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -17,6 +18,21 @@ import (
 )
 
 var mongoClientMap sync.Map
+
+// Init init module
+func Init(opts ...Option) error {
+	initOptions := &initOptions{
+		configer: config.L(),
+	}
+	for _, opt := range opts {
+		opt.apply(initOptions)
+	}
+	if initOptions.configer == nil {
+		return errors.New("config is nil")
+	}
+	config.SetDefaultConfig(initOptions.configer)
+	return nil
+}
 
 // InitPool init mongo driver client
 func InitPool(opts *options.ClientOptions) *mongo.Client {
