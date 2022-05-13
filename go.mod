@@ -3,9 +3,9 @@ module github.com/jacksonCLyu/ridi-mongo
 go 1.18
 
 require (
-	github.com/jacksonCLyu/ridi-config v1.1.7
+	github.com/jacksonCLyu/ridi-config v1.1.10
 	github.com/jacksonCLyu/ridi-log v1.0.0
-	github.com/jacksonCLyu/ridi-utils v1.1.1
+	github.com/jacksonCLyu/ridi-utils v1.1.6
 	go.mongodb.org/mongo-driver v1.9.0
 )
 
@@ -16,6 +16,7 @@ require (
 	github.com/klauspost/compress v1.15.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
