@@ -61,13 +61,10 @@ func DestoryPool(client *mongo.Client) {
 
 // DefaultOptions return default options
 func DefaultOptions() *options.ClientOptions {
-	if !config.ContainsKey(HostKey) {
-		panic("mongo host not found")
-	}
 	hostStr := assignutil.Assign(config.GetString(HostKey))
 	hosts := strings.Split(hostStr, ",")
 	if len(hosts) == 0 {
-		panic("mongo.hosts is empty")
+		panic("mongo hosts is empty")
 	}
 	authMechanism := assignutil.Assign(config.GetString(AuthMechanismKey))
 	username := assignutil.Assign(config.GetString(UsernameKey))

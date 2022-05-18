@@ -13,6 +13,8 @@ github.com/jacksonCLyu/ridi-config v1.1.10 h1:MXAJMH2aCksbAurPM1MbhyUzCd9M087Pvn
 github.com/jacksonCLyu/ridi-config v1.1.10/go.mod h1:ZXk15U/h7nLQPKM/Sscr2T9u5oclK4bPNgaj4VbkZIg=
 github.com/jacksonCLyu/ridi-config v1.1.12 h1:j2p5tAQwKFA6NGolvkFY67SQgyE1HWKBsxY6bVaHoJE=
 github.com/jacksonCLyu/ridi-config v1.1.12/go.mod h1:ZXk15U/h7nLQPKM/Sscr2T9u5oclK4bPNgaj4VbkZIg=
+github.com/jacksonCLyu/ridi-config v1.1.13 h1:DPPLZ/vl4+mnrhl0pZOavjSXFG5vQdxqDHC+NeyFc+A=
+github.com/jacksonCLyu/ridi-config v1.1.13/go.mod h1:ZXk15U/h7nLQPKM/Sscr2T9u5oclK4bPNgaj4VbkZIg=
 github.com/jacksonCLyu/ridi-faces v1.6.7 h1:RmfKvza0HB4ZLaiDvwCtBvkX5YsFKB1dUmVzPRpvF5A=
 github.com/jacksonCLyu/ridi-faces v1.6.7/go.mod h1:JEO+0FKa+9EBEcRJ1tfctyAn2wkUrlph/kI6yx4/XRE=
 github.com/jacksonCLyu/ridi-log v1.0.0 h1:uwRmESxifQ3hdzCG3iSESwyZFPWmoK/+mH4kVW6RIlM=

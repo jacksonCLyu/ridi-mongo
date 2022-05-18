@@ -3,7 +3,7 @@ module github.com/jacksonCLyu/ridi-mongo
 go 1.18
 
 require (
-	github.com/jacksonCLyu/ridi-config v1.1.12
+	github.com/jacksonCLyu/ridi-config v1.1.13
 	github.com/jacksonCLyu/ridi-log v1.0.0
 	github.com/jacksonCLyu/ridi-utils v1.1.6
 	go.mongodb.org/mongo-driver v1.9.0
