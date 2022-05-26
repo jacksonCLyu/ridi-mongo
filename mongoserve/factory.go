@@ -26,6 +26,4 @@ func GetClientWithOptions(serveName string, options *options.ClientOptions) *mon
 
 // ReleaseClient program release a connection
 func ReleaseClient(hostStr string, client *mongo.Client) {
-	Reset(client)
-	mongoClientMap.Store(hostStr, client)
 }

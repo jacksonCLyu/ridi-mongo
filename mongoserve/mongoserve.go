@@ -10,7 +10,6 @@ import (
 
 	"github.com/jacksonCLyu/ridi-config/pkg/config"
 	"github.com/jacksonCLyu/ridi-utils/utils/assignutil"
-	"github.com/jacksonCLyu/ridi-utils/utils/errcheck"
 	"github.com/jacksonCLyu/ridi-utils/utils/rescueutil"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -46,42 +45,26 @@ func InitPool(opts *options.ClientOptions) *mongo.Client {
 	})
 	client := assignutil.Assign(mongo.NewClient(opts))
 	// connect
-	ctx, cancel := context.WithTimeout(context.Background(), *opts.ConnectTimeout)
-	defer cancel()
-	errcheck.CheckAndPanic(client.Connect(ctx))
-	// test connection
-	pingCtx, pingCancel := context.WithTimeout(context.Background(), *opts.ServerSelectionTimeout)
-	defer pingCancel()
-	errcheck.CheckAndPanic(client.Ping(pingCtx, nil))
+	Conn(client)
 	return client
 }
 
-// Reset reset mongo client pool
-func Reset(client *mongo.Client) {
-	defer rescueutil.Recover(func(err any) {
-		fmt.Printf("ResetPool error: %v", err)
-	})
-	disconnCtx, disconnCancel := context.WithCancel(context.Background())
-	defer disconnCancel()
-	errcheck.CheckAndPanic(client.Disconnect(disconnCtx))
+// Conn connect to mongo server
+func Conn(client *mongo.Client) {
 	// connect
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), *clientOpts.ConnectTimeout)
 	defer cancel()
-	errcheck.CheckAndPanic(client.Connect(ctx))
-	// test connection
-	pingCtx, pingCancel := context.WithTimeout(context.Background(), 3*time.Second)
+	_ = client.Connect(ctx)
+	pingCtx, pingCancel := context.WithTimeout(context.Background(), *clientOpts.ServerSelectionTimeout)
 	defer pingCancel()
-	errcheck.CheckAndPanic(client.Ping(pingCtx, nil))
+	_ = client.Ping(pingCtx, nil)
 }
 
 // DestoryPool destroy mongo client pool
 func DestoryPool(client *mongo.Client) {
-	defer rescueutil.Recover(func(err any) {
-		fmt.Printf("DestoryPool error: %v", err)
-	})
 	disconnCtx, disconnCancel := context.WithCancel(context.Background())
 	defer disconnCancel()
-	errcheck.CheckAndPanic(client.Disconnect(disconnCtx))
+	_ = client.Disconnect(disconnCtx)
 }
 
 // DefaultOptions return default options
