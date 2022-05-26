@@ -31,6 +31,11 @@ func Init(opts ...Option) error {
 		return errors.New("config is nil")
 	}
 	config.SetDefaultConfig(initOptions.configer)
+	if initOptions.clientOptions == nil {
+		clientOpts = DefaultOptions()
+	} else {
+		clientOpts = initOptions.clientOptions
+	}
 	return nil
 }
 
@@ -51,12 +56,32 @@ func InitPool(opts *options.ClientOptions) *mongo.Client {
 	return client
 }
 
+// Reset reset mongo client pool
+func Reset(client *mongo.Client) {
+	defer rescueutil.Recover(func(err any) {
+		fmt.Printf("ResetPool error: %v", err)
+	})
+	disconnCtx, disconnCancel := context.WithCancel(context.Background())
+	defer disconnCancel()
+	errcheck.CheckAndPanic(client.Disconnect(disconnCtx))
+	// connect
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	errcheck.CheckAndPanic(client.Connect(ctx))
+	// test connection
+	pingCtx, pingCancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer pingCancel()
+	errcheck.CheckAndPanic(client.Ping(pingCtx, nil))
+}
+
 // DestoryPool destroy mongo client pool
 func DestoryPool(client *mongo.Client) {
 	defer rescueutil.Recover(func(err any) {
 		fmt.Printf("DestoryPool error: %v", err)
 	})
-	errcheck.CheckAndPanic(client.Disconnect(context.Background()))
+	disconnCtx, disconnCancel := context.WithCancel(context.Background())
+	defer disconnCancel()
+	errcheck.CheckAndPanic(client.Disconnect(disconnCtx))
 }
 
 // DefaultOptions return default options

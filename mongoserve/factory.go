@@ -12,7 +12,7 @@ func GetClient(serviceName string) *mongo.Client {
 	defer rescueutil.Recover(func(err any) {
 		log.Errorf("GetClient error: %v", err)
 	})
-	return GetClientWithOptions(serviceName, DefaultOptions())
+	return GetClientWithOptions(serviceName, clientOpts)
 }
 
 // GetClientWithOptions returns a mongo client with options
@@ -26,4 +26,6 @@ func GetClientWithOptions(serveName string, options *options.ClientOptions) *mon
 
 // ReleaseClient program release a connection
 func ReleaseClient(hostStr string, client *mongo.Client) {
+	Reset(client)
+	mongoClientMap.Store(hostStr, client)
 }
