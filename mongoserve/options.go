@@ -1,11 +1,20 @@
 package mongoserve
 
 import (
-	"github.com/jacksonCLyu/ridi-faces/pkg/configer"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var clientOpts *options.ClientOptions
+var defaultClientOpts *options.ClientOptions
+
+// GetLOptions returns default global client options
+func GetLOptions() *options.ClientOptions {
+	return defaultClientOpts
+}
+
+// SetLOptions set default global client options
+func SetLOptions(clientOpts *options.ClientOptions) {
+	defaultClientOpts = clientOpts
+}
 
 // Option is a function that can be passed to Init
 type Option interface {
@@ -13,7 +22,7 @@ type Option interface {
 }
 
 type initOptions struct {
-	configer      configer.Configurable
+	serveName     string
 	clientOptions *options.ClientOptions
 }
 
@@ -21,13 +30,6 @@ type OptFunc func(opts *initOptions)
 
 func (f OptFunc) apply(opts *initOptions) {
 	f(opts)
-}
-
-// WithConfig set config
-func WithConfig(config configer.Configurable) Option {
-	return OptFunc(func(opts *initOptions) {
-		opts.configer = config
-	})
 }
 
 // WithClientOpts set client options

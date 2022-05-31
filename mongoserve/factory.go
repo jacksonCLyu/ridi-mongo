@@ -1,7 +1,8 @@
 package mongoserve
 
 import (
-	"github.com/jacksonCLyu/ridi-log/log"
+	"log"
+
 	"github.com/jacksonCLyu/ridi-utils/utils/rescueutil"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -10,20 +11,30 @@ import (
 // GetClient returns a mongo client
 func GetClient(serviceName string) *mongo.Client {
 	defer rescueutil.Recover(func(err any) {
-		log.Errorf("GetClient error: %v", err)
+		log.Printf("GetClient error: %v\n", err)
 	})
-	return GetClientWithOptions(serviceName, clientOpts)
+	return GetClientWithOptions(serviceName, defaultClientOpts)
 }
 
 // GetClientWithOptions returns a mongo client with options
 func GetClientWithOptions(serveName string, options *options.ClientOptions) *mongo.Client {
 	defer rescueutil.Recover(func(err any) {
-		log.Errorf("GetClientWithOptions error: %v", err)
+		log.Printf("GetClientWithOptions error: %v\n", err)
 	})
-	client, _ := mongoClientMap.LoadOrStore(serveName, InitPool(options))
-	return client.(*mongo.Client)
+	poolObj, _ := _mongoClientPoolMap.LoadOrStore(serveName, newClientPool(options))
+	pool := poolObj.(*clientPool)
+	return pool.getClientFromPool()
 }
 
 // ReleaseClient program release a connection
-func ReleaseClient(hostStr string, client *mongo.Client) {
+func ReleaseClient(serveName string, client *mongo.Client) {
+	defer rescueutil.Recover(func(err any) {
+		log.Printf("ReleaseClient error: %v\n", err)
+	})
+	poolObj, _ := _mongoClientPoolMap.Load(serveName)
+	if poolObj == nil {
+		return
+	}
+	pool := poolObj.(*clientPool)
+	pool.returnClientToPool(client)
 }
