@@ -3,6 +3,7 @@ package mongoserve
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/jacksonCLyu/ridi-utils/utils/assignutil"
 	"github.com/jacksonCLyu/ridi-utils/utils/errcheck"
@@ -64,4 +65,8 @@ func Disconn(client *mongo.Client) error {
 func Reset(client *mongo.Client) error {
 	_ = Disconn(client)
 	return Conn(client)
+}
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
