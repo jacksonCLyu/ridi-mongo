@@ -36,9 +36,6 @@ func InitClient(opts *options.ClientOptions) *mongo.Client {
 
 // Conn connect to mongo server
 func Conn(client *mongo.Client) error {
-	if CheckConnOK(client) {
-		return nil
-	}
 	// connect
 	ctx, cancel := context.WithTimeout(context.Background(), *defaultClientOpts.ConnectTimeout)
 	defer cancel()

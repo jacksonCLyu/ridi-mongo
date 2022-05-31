@@ -3,6 +3,7 @@ package mongoserve
 import (
 	"sync"
 
+	"github.com/jacksonCLyu/ridi-utils/utils/errcheck"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -15,12 +16,14 @@ var _mongoClientPoolMap sync.Map
 
 func (cp *clientPool) getClientFromPool() *mongo.Client {
 	client := cp.pool.Get().(*mongo.Client)
-	Conn(client)
+	if !CheckConnOK(client) {
+		errcheck.CheckAndPanic(Conn(client))
+	}
 	return client
 }
 
 func (cp *clientPool) returnClientToPool(client *mongo.Client) {
-	Disconn(client)
+	errcheck.CheckAndPanic(Reset(client))
 	cp.pool.Put(client)
 }
 
