@@ -4,16 +4,20 @@ import (
 	"context"
 	"testing"
 
-	"github.com/jacksonCLyu/ridi-config/pkg/config"
 	"github.com/jacksonCLyu/ridi-utils/utils/assignutil"
 	"github.com/jacksonCLyu/ridi-utils/utils/errcheck"
+	"github.com/jacksonCLyu/ridi-utils/utils/rescueutil"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func TestGetClient(t *testing.T) {
-	config.Init()
-	cfg := assignutil.Assign(config.NewConfig(config.WithFilePath("./testdata/testConfig.yaml")))
-	errcheck.CheckAndPanic(config.Init(config.WithConfigurable(cfg)))
+	defer rescueutil.Recover(func(err any) {
+		t.Errorf("TestGetClient error: %v\n", err)
+	})
+	if err := Init(WithClientOpts(&options.ClientOptions{})); err != nil {
+		t.Errorf("Init error: %v", err)
+	}
 	client := GetClient("test")
 	collection := client.Database("flight").Collection("a_temp")
 	cursor := assignutil.Assign(collection.Find(context.Background(), bson.M{}))
