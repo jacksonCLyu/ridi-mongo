@@ -36,6 +36,9 @@ func InitClient(opts *options.ClientOptions) *mongo.Client {
 
 // Conn connect to mongo server
 func Conn(client *mongo.Client) error {
+	if CheckConnOK(client) {
+		return nil
+	}
 	// connect
 	ctx, cancel := context.WithTimeout(context.Background(), *defaultClientOpts.ConnectTimeout)
 	defer cancel()
@@ -45,6 +48,12 @@ func Conn(client *mongo.Client) error {
 	pingCtx, pingCancel := context.WithTimeout(context.Background(), *defaultClientOpts.ServerSelectionTimeout)
 	defer pingCancel()
 	return client.Ping(pingCtx, nil)
+}
+
+func CheckConnOK(client *mongo.Client) bool {
+	pingCtx, pingCancel := context.WithTimeout(context.Background(), *defaultClientOpts.ServerSelectionTimeout)
+	defer pingCancel()
+	return client.Ping(pingCtx, nil) == nil
 }
 
 // Disconn disconnect mongo client pool

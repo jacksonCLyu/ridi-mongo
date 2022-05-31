@@ -14,11 +14,13 @@ type clientPool struct {
 var _mongoClientPoolMap sync.Map
 
 func (cp *clientPool) getClientFromPool() *mongo.Client {
-	return cp.pool.Get().(*mongo.Client)
+	client := cp.pool.Get().(*mongo.Client)
+	Conn(client)
+	return client
 }
 
 func (cp *clientPool) returnClientToPool(client *mongo.Client) {
-	Reset(client)
+	Disconn(client)
 	cp.pool.Put(client)
 }
 
